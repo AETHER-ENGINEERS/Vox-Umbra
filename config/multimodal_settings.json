@@ -12,7 +12,7 @@
   },
   "model": {
     "provider": "groq",
-    "name": "moonshotai/kimi-k2-instruct-0905",
+    "name": "qwen3-coder-next:cloud",
     "channel": "qwen3-coder-next:cloud"
   },
   "discord": {
@@ -31,11 +31,11 @@
   "security": {
     "token_env_var": "DISCORD_BOT_TOKEN",
     "allowed_guilds": [
-      "359380840213512192"
+      "your_guild_here"
     ],
     "allowed_channels": [
-      "1476715019885613097",
-      "code-dump-thread-ids"
+      "your_channel(s)_here",
+      "thread-id(s)"
     ]
   }
 }
