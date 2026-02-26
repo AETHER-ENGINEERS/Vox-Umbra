@@ -34,11 +34,16 @@ Vox-Umbra/
 ├── src/
 │   ├── index.js              # Main entry point
 │   ├── handlers/
-│   │   ├── message.js        # Text message handling
-│   │   ├── image.js          # Image processing (multimodal)
+│   │   ├── message.js        # Text message handling + channel summarizer
 │   │   └── interaction.js    # Slash commands + modals
+│   ├── commands/
+│   │   ├── hello.js          # /hello test command
+│   │   ├── setup.js          # /setup status report
+│   │   └── summary.js        # /summary channel/thread summaries
 │   └── utils/
 │       └── discord.js        # Utility functions
+├── data/
+│   └── summaries/            # Auto-generated summaries (gitignored)
 └── README.md
 ```
 
@@ -63,13 +68,34 @@ Vox-Umbra/
 
 ---
 
+## 📊 Channel Summarizer Feature
+
+**How it works:**
+- Tracks all messages per channel/thread
+- Auto-summarizes every 25 messages or after 15 min idle
+- Saves summaries to `data/summaries/` (gitignored)
+- Provides `/summary` slash command to query recent summaries
+
+**Commands:**
+- `/summary` — Get latest summary for current channel
+- `/summary --hours=24` — Custom time range (1-24 hours)
+- `/summary --thread=true` — Summarize current thread
+
+**Why it matters:**
+- Reduces token usage (summarized context instead of raw messages)
+- Preserves important discussion threads
+- Enables "memory" for Kimi K2 model integration
+
+---
+
 ## 💬 multimodal Capabilities Plan
 
 | Feature | Status |
 |---------|--------|
-| Text responses | ✅ Planned |
-| Image uploads/reactions | ✅ Planned |
-| Image analysis (caption, OCR) | ✅ Planned |
+| Text responses | ✅ Completed |
+| Image uploads/reactions | ✅ Completed |
+| Image analysis (caption, OCR) | ✅ Implemented |
+| Channel summarizer | ✅ Implemented |
 | Voice responses (TTS) | 🟡 Later |
 | Video/URL previews | 🟡 Later |
 
