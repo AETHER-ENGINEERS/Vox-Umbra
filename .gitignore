@@ -1,0 +1,17 @@
+# Environment variables (never commit real values)
+config/bot_token
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

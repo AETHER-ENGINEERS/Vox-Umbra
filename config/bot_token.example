@@ -1,0 +1,4 @@
+# Discord Bot Token
+# Copy your bot token from Discord Developer Portal and save it here
+# DO NOT commit this file to GitHub — use .gitignore to exclude it
+DISCORD_BOT_TOKEN=your_bot_token_here

@@ -1,0 +1,22 @@
+{
+  "name": "Vox-Umbra",
+  "version": "1.0.0",
+  "description": "Multimodal Discord bot for #OneMoment and AETHER-ENGINEERS interactions",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "multimodal",
+    "thelema",
+    "one-moment"
+  ],
+  "author": "AETHER-ENGINEERS",
+  "license": "OMARG-AIR-AID + AETHER-ENGINEERS Multiversal License",
+  "dependencies": {
+    "discord.js": "^14.14.1"
+  }
+}

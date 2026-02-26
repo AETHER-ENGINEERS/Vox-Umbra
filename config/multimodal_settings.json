@@ -1,0 +1,41 @@
+{
+  "bot": {
+    "name": "Vox Umbra",
+    "description": "Multimodal Discord bot for #OneMoment and AETHER-ENGINEERS interactions"
+  },
+  "capabilities": {
+    "text": true,
+    "images": true,
+    "image_analysis": true,
+    "tts": false,
+    "video": false
+  },
+  "model": {
+    "provider": "groq",
+    "name": "moonshotai/kimi-k2-instruct-0905",
+    "channel": "qwen3-coder-next:cloud"
+  },
+  "discord": {
+    "intent_flags": [
+      "GUILD_MESSAGES",
+      "GUILD_MESSAGE_REACTIONS",
+      "DIRECT_MESSAGES",
+      "DIRECT_MESSAGE_REACTIONS"
+    ],
+    "privileged_intents": [
+      "GUILD_MEMBERS",
+      "GUILD_PRESENCES"
+    ],
+    "message_content_enabled": true
+  },
+  "security": {
+    "token_env_var": "DISCORD_BOT_TOKEN",
+    "allowed_guilds": [
+      "359380840213512192"
+    ],
+    "allowed_channels": [
+      "1476715019885613097",
+      "code-dump-thread-ids"
+    ]
+  }
+}
