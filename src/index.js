@@ -57,6 +57,15 @@ client.on('ready', () => {
   client.user.setActivity('for #OneMoment & AETHER-ENGINEERS');
 });
 
+client.on('messageCreate', async message => {
+  // Skip bot messages
+  if (message.author.bot) return;
+
+  // Load and use the multimodal message handler
+  const { handleMessage, handleMention } = require('./handlers/message');
+  handleMessage(message);
+});
+
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
 
@@ -69,14 +78,6 @@ client.on('interactionCreate', async interaction => {
     console.error('❌ Command execution error:', error);
     await interaction.reply({ content: 'There was an error executing this command.', ephemeral: true });
   }
-});
-
-client.on('messageCreate', async message => {
-  // Skip bot messages
-  if (message.author.bot) return;
-
-  // Placeholder for multimodal message handling
-  // In next steps: detect image uploads, text analysis, etc.
 });
 
 // Login with token
