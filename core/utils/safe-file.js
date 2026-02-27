@@ -68,7 +68,7 @@ function safeExists(filePath) {
 /**
  * Safe directory listing
  */
-function safe.readdir(dirPath) {
+function safeReaddir(dirPath) {
   try {
     return fs.readdirSync(dirPath);
   } catch (error) {
@@ -91,6 +91,6 @@ module.exports = {
     writeFile: safeWriteFile,
     readFile: safeReadFile,
     exists: safeExists,
-    readdir: safe.readdir
+    readdir: safeReaddir
   }
 };

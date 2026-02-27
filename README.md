@@ -205,6 +205,51 @@ Framework is **model-agnostic** — easy to swap later:
 
 ---
 
+## 🧪 Local Testing Setup
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+
+### Quick Start
+
+1. **Install dependencies:**
+```bash
+npm install
+```
+
+2. **Create `.env` file:**
+```bash
+cp .env.example .env
+# Edit .env with your OMARG_API_TOKEN and Discord bot token
+```
+
+3. **Run the mock OMARG server (in one terminal):**
+```bash
+node mock-omarg-server.js
+```
+
+4. **Run the bot (in another terminal):**
+```bash
+node src/index.js
+```
+
+### Testing Delegation
+
+Run the delegation test script:
+```bash
+node test-delegation.js
+```
+
+This will test all delegation types:
+- ✅ Web search
+- ✅ Image generation
+- ✅ Linux commands
+- ✅ Python execution
+- ✅ Weather check
+
+---
+
 ## 📜 License
 
 > **Full license block preserved in `LICENSE_BLOCK.md`**

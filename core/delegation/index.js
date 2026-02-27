@@ -13,8 +13,8 @@
  * - Supports API endpoints, local commands, or hybrid approaches
  */
 
-const { writeMemory } = require('./memory/writer');
-const { safeWriteFile } = require('./utils/safe-file');
+const { writeMemory } = require('../memory/writer');
+const { safeWriteFile } = require('../utils/safe-file');
 const fs = require('fs');
 const path = require('path');
 
@@ -185,10 +185,15 @@ async function executeLocalDelegation(request, config, taskConfig) {
     const tempFile = `/tmp/voxumbra_${request.requestId}.py`;
     
     // Sanitize code (basic protection)
-    const safeCode = payload.code.replace(/;.*process\.|.*eval\(|.*require\(|.*fs\.|.*child_process/g, '');
+    const safeCode = payload.code
+      .replace(/;.*process\./g, '')
+      .replace(/.*eval\(/g, '')
+      .replace(/.*require\(/g, '')
+      .replace(/.*fs\./g, '')
+      .replace(/.*child_process/g, '');
     
     fs.writeFileSync(tempFile, safeCode);
-    commandArgs = ['-c', safeCode];
+    commandArgs = [tempFile];
   }
   
   console.log(`💻 Local command: ${commandToRun} ${commandArgs.join(' ')}`);
@@ -216,12 +221,18 @@ async function executeLocalDelegation(request, config, taskConfig) {
       });
       
       child.on('close', code => {
-        if (code === 0) {
-          resolve({ output: stdout, exitCode: code });
-        } else {
-          reject(new Error(`Command exited with code ${code}: ${stderr}`));
-        }
-      });
+      // Clean up temp file
+      const tempFile = `/tmp/voxumbra_${request.requestId}.py`;
+      if (fs.existsSync(tempFile)) {
+        fs.unlinkSync(tempFile);
+      }
+      
+      if (code === 0) {
+        resolve({ output: stdout, exitCode: code });
+      } else {
+        reject(new Error(`Command exited with code ${code}: ${stderr}`));
+      }
+    });
       
       child.on('error', error => {
         reject(error);

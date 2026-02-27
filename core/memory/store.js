@@ -161,5 +161,6 @@ module.exports = {
   deleteMemory,
   getStats,
   generateMemoryId,
-  ensureDir
+  ensureDir,
+  getPersonalityDir
 };

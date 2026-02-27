@@ -1,5 +1,5 @@
 {
-  "name": "Vox-Umbra",
+  "name": "vox-umbra",
   "version": "1.0.0",
   "description": "Multimodal Discord bot for #OneMoment and AETHER-ENGINEERS interactions",
   "main": "src/index.js",
@@ -17,6 +17,12 @@
   "author": "AETHER-ENGINEERS",
   "license": "OMARG-AIR-AID + AETHER-ENGINEERS Multiversal License",
   "dependencies": {
-    "discord.js": "^14.14.1"
+    "cors": "^2.8.6",
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  },
+  "directories": {
+    "example": "examples"
   }
 }

@@ -15,3 +15,17 @@ logs/
 .idea/
 *.swp
 *.swo
+
+# Node modules
+node_modules/
+
+# Data directories (memories, searches, summaries)
+data/
+data/memories/
+data/searches/
+data/summaries/
+data/images/
+
+# Temporary files
+tmp/
+*.tmp
