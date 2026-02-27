@@ -31,10 +31,22 @@ function handleMessageWrapper(message, client) {
     const prepared = prepareContextForModel(client, channelId, threadId, message.content);
 
     console.log(`📊 Search-based context prepared for Kimi K2:`);
-    console.log(`   - Search query: ${prepared.searchQuery}`);
-    console.log(`   - Intent: ${prepared.intent.type}`);
-    console.log(`   - Results: ${prepared.summary?.messageCount || 0} messages`);
-    console.log(`   - Users: ${prepared.summary?.uniqueUsers || 0}`);
+    console.log(`   - Search query: ${prepared?.searchQuery || 'N/A'}`);
+    console.log(`   - Intent: ${prepared?.intent?.type || 'N/A'}`);
+    console.log(`   - Results: ${prepared?.summary?.messageCount || 0} messages`);
+    console.log(`   - Users: ${prepared?.summary?.uniqueUsers || 0}`);
+
+    // Handle case where search failed or intent is undefined
+    if (!prepared || !prepared.intent || !prepared.intent.type) {
+      console.log(`⚠️ Search/Intent failed, using fallback context`);
+      return {
+        contextId,
+        searchQuery: message.content,
+        intent: { type: 'fallback', message: 'Search failed - using message content' },
+        summary: { messageCount: 0, uniqueUsers: 0 },
+        searchResults: { results: [], totalResults: 0 }
+      };
+    }
 
     // Return prepared context for Kimi K2 integration
     return prepared;

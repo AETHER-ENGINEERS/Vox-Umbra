@@ -81,8 +81,10 @@ client.on('messageCreate', async message => {
   // Log all messages for debugging
   console.log(`💬 Message received from ${message.author.tag}: ${message.content?.slice(0, 50)}`);
   
-  // NOTE: We DO NOT skip bot messages - bots engage with bots!
-  // Humans help break any accidental loops by responding in the thread
+  // Skip bot messages to avoid loops - humans help break accidental loops
+  if (message.author.bot) {
+    return;
+  }
 
   const channelId = message.channel.id;
   const threadId = message.channel.parentId || message.channel.threadId || null;
@@ -97,8 +99,8 @@ client.on('messageCreate', async message => {
     
     console.log(`📊 Result:`, result);
     
-    // Reply to the mention
-    if (result && result.searchQuery) {
+    // Reply to the mention (only if searchQuery is defined)
+    if (result && result.searchQuery && result.searchQuery !== message.content) {
       await message.reply(`✅ Context built! Search: ${result.searchQuery}`);
     }
   }

@@ -233,6 +233,7 @@ async function prepareContextForModel(client, channelId, threadId, messageConten
   let searchOptions = {
     channelId,
     threadId: threadId || null,
+    query: messageContent, // Use messageContent as search query
     limit: 30 // Default to 30 most relevant
   };
 
@@ -255,7 +256,7 @@ async function prepareContextForModel(client, channelId, threadId, messageConten
   const searchResults = await performSearch(client, searchOptions);
 
   // Build summary from search results
-  const summary = buildSearchSummary(searchResults.results, contextId);
+  const summary = buildSearchSummary(searchResults.results || [], contextId);
 
   // Save search results for audit
   if (summary) {
@@ -265,7 +266,7 @@ async function prepareContextForModel(client, channelId, threadId, messageConten
 
   return {
     contextId,
-    searchQuery: searchResults.query,
+    searchQuery: searchResults.query || messageContent,
     summary,
     searchResults,
     intent
