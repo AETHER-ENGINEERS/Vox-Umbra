@@ -11,7 +11,7 @@ const { prepareContextForModel } = require('./search');
 /**
  * Process incoming message
  */
-function handleMessageWrapper(message) {
+function handleMessageWrapper(message, client) {
   // Skip bot messages to avoid loops
   if (message.author.bot) return;
 
@@ -27,13 +27,8 @@ function handleMessageWrapper(message) {
   if (message.mentions.has(process.env.CLIENT_ID)) {
     console.log(`🔔 Bot mentioned in ${contextId} — preparing search-based context for Kimi K2`);
 
-    // Prepare context using search-based retrieval
-    const prepared = prepareContextForModel(
-      { user: { id: process.env.CLIENT_ID } }, // Mock client for now
-      channelId,
-      threadId,
-      message.content
-    );
+    // Prepare context using search-based retrieval (real client)
+    const prepared = prepareContextForModel(client, channelId, threadId, message.content);
 
     console.log(`📊 Search-based context prepared for Kimi K2:`);
     console.log(`   - Search query: ${prepared.searchQuery}`);

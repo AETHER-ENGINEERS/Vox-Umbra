@@ -82,27 +82,11 @@ client.on('messageCreate', async message => {
   if (message.mentions.has(process.env.CLIENT_ID)) {
     console.log(`🔔 Bot mentioned in ${channelId}${threadId ? `/${threadId}` : ''}`);
     
-    // Prepare context with search + memory
-    const context = await contextBuilder.buildContext(personality, {
-      client,
-      channelId,
-      threadId,
-      query: message.content,
-      recentMessages: [message],
-      memoryLimit: 10
-    });
+    // Use the search-based message handler with real client
+    const { handleMessage } = require('./handlers/message');
+    const result = handleMessage(message, client);
     
-    console.log(`📊 Context built:`, {
-      current: context.sources.current?.count || 0,
-      search: context.sources.search?.count || 0,
-      memory: context.sources.memory?.count || 0,
-      total: context.sources.memory?.count + context.sources.search?.count || 0
-    });
-    
-    // Note: In production, this context would be passed to Kimi K2
-    // For now, we're just building the framework
-    
-    return context;
+    console.log(`📊 Result:`, result);
   }
   
   return null;

@@ -1,0 +1,78 @@
+{
+  "personality": "voxumbra",
+  "description": "Default personality for Vox Umbra - multimodal Discord bot",
+  "version": "1.0.0",
+  
+  "delegation": {
+    "enabled": true,
+    "omarg_api_url": "http://localhost:3000/api/delegate",
+    "timeout": 30000,
+    "retry": {
+      "enabled": true,
+      "maxAttempts": 3,
+      "delay": 1000
+    }
+  },
+  
+  "tasks": {
+    "web_search": {
+      "type": "api",
+      "endpoint": "/search",
+      "params": {
+        "source": "web",
+        "limit": 10
+      }
+    },
+    "image_generation": {
+      "type": "api",
+      "endpoint": "/image/generate",
+      "params": {
+        "model": "stable-diffusion-xl",
+        "style": "thelema"
+      }
+    },
+    "image_save": {
+      "type": "local",
+      "command": "cp",
+      "output_dir": "data/images"
+    },
+    "voice_synthesis": {
+      "type": "api",
+      "endpoint": "/voice/synthesize",
+      "params": {
+        "voice_model": "elevenlabs/nova"
+      }
+    },
+    "linux_command": {
+      "type": "local",
+      "command": "bash",
+      "args": ["-c"]
+    },
+    "python_exec": {
+      "type": "local",
+      "command": "python3",
+      "args": ["-c"]
+    },
+    "calendar_check": {
+      "type": "api",
+      "endpoint": "/calendar/events",
+      "params": {
+        "days": 7
+      }
+    },
+    "email_check": {
+      "type": "api",
+      "endpoint": "/email/unread",
+      "params": {
+        "limit": 5
+      }
+    },
+    "weather_check": {
+      "type": "api",
+      "endpoint": "/weather/current",
+      "params": {
+        "units": "imperial"
+      }
+    }
+  }
+}
