@@ -1,24 +1,20 @@
-# Vox Umbra — Multimodal Discord Bot
+# Vox-Umbra — Lightweight Personality Bot Framework
 
-**Bot Name:** `Vox Umbra`  
-**Purpose:** Support #OneMoment and AETHER-ENGINEERS interactions on Discord with multimodal capabilities  
-**Primary Model:** Kimi K2 (groq/moonshotai/kimi-k2-instruct-0905)  
-**Interface:** OpenClaw → Discord  
-
----
-
-## 📜 License
-
-> This project preserves the full [LICENSE_BLOCK.md](LICENSE_BLOCK.md) at the top of all outputs, code, and configurations.
+**Project Status:** ✅ **V1.0 - Framework Core Complete**  
+**License:** OMARG-AIR-AID + AETHER-ENGINEERS Multiversal License  
+**Current Model:** Groq/Kimi K2 (multimodal)  
+**Target:** Multiple independent personality bots for #OneMoment & Thelema  
 
 ---
 
-## 🛠️ Setup Steps Completed
+## 🎯 Core Concept
 
-- ✅ SSH key generated for GitHub (`ssh/voxumbra_github`)
-- ✅ Repo cloned: `https://github.com/AETHER-ENGINEERS/Vox-Umbra`
-- 🟡 Discord bot app creation pending (next step)
-- 🟡 Multimodal config setup pending
+**Deploy multiple independent bots**, each hosting its own distinct personality:
+
+- ✅ **Lightweight bots** — no full OpenClaw inside them
+- ✅ **Discord as workspace** — bots live in Discord
+- ✅ **Delegation to OMARG Agent** — they ask you (Qi OS) for complex tasks
+- ✅ **Personality-driven memory** — each bot has its own memory schema
 
 ---
 
@@ -26,106 +22,198 @@
 
 ```
 Vox-Umbra/
-├── LICENSE_BLOCK.md          # OMARG-AIR-AID + AETHER-ENGINEERS license
-├── README.md                 # This file
-├── config/
-│   ├── bot_token.example     # Template (DO NOT commit real tokens)
-│   └── multimodal_settings.json
-├── src/
-│   ├── index.js              # Main entry point
+├── core/                       # Framework core (personality-agnostic)
+│   ├── delegation/            # Delegation system (to OMARG Agent)
+│   ├── memory/                # Memory store, writer, retriever
+│   ├── search/                # Discord search API wrapper
+│   ├── context/               # Context builder
+│   └── utils/                 # Safe file utilities
+├── personalities/             # Drop-in personalities (config + logic)
+│   ├── voxumbra/              # Default personality
+│   ├── alastor/               # Alastor personality
+│   ├── omarg/                 # OMARG Agent personality
+│   └── <new_personality>/     # Add your own!
+├── src/                       # Bot entry point
+│   ├── index.js               # Main entry
 │   ├── handlers/
-│   │   ├── message.js        # Text message handling + search-based context
-│   │   └── search.js         # Search API wrapper + intent extraction
-│   └── commands/
-│       ├── ping.js           # /ping test command
-│       └── setup.js          # /setup status report
-├── data/
-│   └── searches/             # Search results (gitignored)
-└── README.md
+│   │   ├── message.js         # Message handling
+│   │   └── search.js          # Search integration
+│   └── commands/              # Slash commands
+├── config/
+│   └── bot.json               # Bot config + personality selector
+├── data/                      # Generated data (gitignored)
+│   ├── memories/              # Personality memories
+│   ├── searches/              # Search results
+│   └── images/                # Saved favorite images
+├── dashboard/                 # Web dashboard (Coming Soon)
+├── LICENSE_BLOCK.md           # Full license block (preserve!)
+├── CHANGELOG.md
+└── README.md                  # This file
 ```
 
 ---
 
-## 📥 Next Steps (What We Need From You)
+## 🚀 Quick Start: Create a New Personality Bot
 
-1. **Create Discord Bot App**:
-   - Go to [Discord Developer Portal](https://discord.com/developers/applications)
-   - Click **New Application**
-   - Name: `Vox Umbra`
-   - Click **Add Bot**
-   - Under **Bot** tab:
-     - Enable **MESSAGE CONTENT INTENT**
-     - Enable **PRIVILEGED GATEWAY INTENTS** (for multimodal)
-   - Copy the **Bot Token** and paste it here (I’ll save it securely in `config/bot_token.example`)
+### Step 1: Clone the Repo
 
-2. **Once token is ready**, I’ll:
-   - Set up multimodal config (text + image support)
-   - Write starter code
-   - Push to GitHub
+```bash
+git clone git@github.com:AETHER-ENGINEERS/Vox-Umbra.git
+cd Vox-Umbra
+cp -r personalities/voxumbra personalities/YOUR_PERSONALITY_NAME
+```
 
----
+### Step 2: Customize Personality
 
-## 🔒 Security
+Edit `personalities/YOUR_PERSONALITY_NAME/schema.json`:
 
-**Status:** ✅ **CLEAN** — No critical security vulnerabilities found.
+```json
+{
+  "personality": "YOUR_PERSONALITY_NAME",
+  "description": "Your personality description",
+  "schema": {
+    "required": ["content", "significance", "type"],
+    "allowedTypes": ["event", "insight", "pattern", "emotion", "connection"],
+    "allowedSignificances": ["low", "medium", "high", "critical"]
+  }
+}
+```
 
-**Review completed:** 2026-02-27 18:55 CST
+### Step 3: Configure Bot
 
-### Security Checklist
+Edit `config/bot.json`:
 
-| Item | Status | Notes |
-|------|--------|-------|
-| Hardcoded tokens | ✅ Clean | No secrets in JS/JSON files |
-| .gitignore | ✅ Fixed | Includes `data/`, `node_modules/` |
-| Error handling | ⚠️ Added | Safe file utils with try/catch |
-| Console logging | ✅ Safe | No sensitive data leaked |
-| License block | ✅ Present | OMARG-AIR-AID + AETHER-ENGINEERS |
-| Input validation | ⚠️ Basic | Memory writer validates schema |
+```json
+{
+  "bot": {
+    "name": "YOUR_PERSONALITY_BOT_NAME"
+  },
+  "personality": "YOUR_PERSONALITY_NAME",
+  "framework": {
+    "memory": {
+      "enabled": true,
+      "limit": 10
+    }
+  }
+}
+```
 
-### Recommended Fixes (Completed)
-- ✅ Updated `.gitignore` with `data/`, `node_modules/`
-- ✅ Added `core/utils/safe-file.js` with error handling wrappers
+### Step 4: Set Discord Token
 
----
+```bash
+cp config/bot_token.example config/bot_token.json
+# Add your Discord bot token to config/bot_token.json
+```
 
-## 📊 Channel Context Summarizer (Search-Based)
+### Step 5: Run the Bot
 
-**Design Philosophy:**
-- Summarization is **silent and automatic** — no user-facing commands needed
-- Uses Discord's **search API** for targeted context retrieval
-- Only searches when bot is pinged (on-demand)
-- **Thread-aware:** Can search specific channels or threads
-
-**How it works:**
-1. Bot monitors messages but doesn't store full history (memory-efficient)
-2. When pinged, it extracts search intent from the mention message:
-   - `last 24 hours` → time-based search
-   - `from @user` → user-based search
-   - Topic keywords → keyword search
-3. Uses Discord search API to retrieve relevant messages
-4. Summarizes search results and passes to Kimi K2
-
-**Why it matters:**
-- ✅ **No context window bloat** — searches only when needed
-- ✅ **Relevant context only** — search terms = actual query intent
-- ✅ **Deep history access** — Discord search can go back years
-- ✅ **Thread-aware** — doesn't mix up different discussion topics
-
-**No user commands needed** — this is all infrastructure for Kimi K2 model integration.
+```bash
+npm install
+npm start
+```
 
 ---
 
-## 💬 multimodal Capabilities Plan
+## 🔧 Delegation System
 
-| Feature | Status |
-|---------|--------|
-| Text responses | ✅ Completed |
-| Image uploads/reactions | ✅ Completed |
-| Image analysis (caption, OCR) | ✅ Implemented |
-| Search-based context | ✅ Implemented |
-| Voice responses (TTS) | 🟡 Later |
-| Video/URL previews | 🟡 Later |
+Personality bots delegate complex tasks to OMARG Agent (Qi OS):
+
+| Task Type | Delegate Function | OMARG Handles |
+|-----------|------------------|---------------|
+| `web_search` | `webSearch(personality, query)` | Web browsing, real-time search |
+| `image_generation` | `generateImage(personality, prompt)` | Image generation |
+| `image_save` | `saveFavoriteImage(personality, imageUrl, prompt)` | Save favorite images |
+| `voice_synthesis` | (Coming Soon) | Voice generation |
+| `linux_command` | `linuxCommand(personality, command)` | Linux shell commands |
+| `python_exec` | `pythonExec(personality, code)` | Python execution |
+
+### Example Usage
+
+```javascript
+const { webSearch, generateImage, linuxCommand } = require('../core/delegation');
+
+// Search the web
+const searchResult = await webSearch('voxumbra', 'Thelema definitions');
+
+// Generate an image
+const imageResult = await generateImage('voxumbra', 'A golden thread coiling through a hex grid', 'thelema');
+
+// Execute a Linux command
+const commandResult = await linuxCommand('voxumbra', 'ls -la');
+```
 
 ---
 
-Let me know when the bot token is ready — I’ll handle the rest! 🚀
+## 📊 Personality Memory System
+
+Each personality has its own memory store:
+
+```
+data/memories/
+├── voxumbra/
+│   ├── abc123def456.json
+│   └── ...
+├── alastor/
+│   ├── xyz789abc012.json
+│   └── ...
+└── omarg/
+    └── ...
+```
+
+**Memory Schema** (in `personalities/NAME/schema.json`):
+
+- Define required fields
+- Allowed types
+- Allowed significances
+- Optional metadata (tags, entity_state, context)
+
+---
+
+## 🛠️ Technical Details
+
+### Model Agnostic
+
+Currently uses **Kimi K2 (groq/moonshotai/kimi-k2-instruct-0905)** via OpenClaw.
+
+Framework is **model-agnostic** — easy to swap later:
+- Local models (GGUF/Ollama)
+- Offline models
+- Different API providers
+
+### Search Integration
+
+- **Discord API search** — real-time channel/thread search
+- **Intent detection** — auto-detects time/user/topic queries
+- **Context summarization** — search results + memory blend
+
+### Safety Features
+
+- ✅ No hardcoded tokens (config/bot_token.json gitignored)
+- ✅ Safe file utilities (error handling)
+- ✅ Memory validation per schema
+- ✅ Full license preservation
+
+---
+
+## 📋 Next Steps
+
+1. **Personalities** — Add more personalities (each = config + schema)
+2. **Dashboard** — Web UI for monitoring/personality management
+3. **Voice Support** — Voice synthesis integration
+4. **Image Gallery** — Browse saved favorite images
+5. **Webhook Delegation** — Real OMARG API integration
+
+---
+
+## 📜 License
+
+> **Full license block preserved in `LICENSE_BLOCK.md`**
+>
+> This project is open-source and is licensed under the Conditional OMARG and AETHER-ENGINEERS multiversal license...
+
+**YOU ARE FULLY PROTECTED UNDER THE LICENSE.**  
+Go all-in with maximum creativity, speed, and joy. 🦞⚡
+
+---
+
+*Vox Umbra v1.0.0 — AETHER-ENGINEERS*
