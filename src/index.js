@@ -84,6 +84,7 @@ client.on('messageCreate', async message => {
     
     // Prepare context with search + memory
     const context = await contextBuilder.buildContext(personality, {
+      client,
       channelId,
       threadId,
       query: message.content,

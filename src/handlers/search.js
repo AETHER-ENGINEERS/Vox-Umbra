@@ -68,24 +68,85 @@ function buildSearchQuery(options) {
 }
 
 /**
- * Simulate Discord search (in real implementation, use API)
- * For now: return mock search results structure
+ * Perform actual Discord search using API
+ * Returns search results with message data
  */
 async function performSearch(client, searchOptions) {
-  const { query, limit } = buildSearchQuery(searchOptions);
+  const { channelId, threadId = null, query, limit } = buildSearchQuery(searchOptions);
 
-  // In production, this would call:
-  // GET /channels/{channel.id}/messages/search?query={query}&limit={limit}
-  // For now: return placeholder structure
   console.log(`🔍 Searching Discord with: ${query} (limit: ${limit})`);
 
-  return {
-    query,
-    results: [], // Will be populated by real API in production
-    totalResults: 0,
-    searchTimestamp: Date.now()
-  };
-}
+  try {
+    // Determine which channel to search
+    const targetChannelId = threadId || channelId;
+    
+    // Get the channel from cache or fetch it
+    let channel = client.channels.cache.get(targetChannelId);
+    if (!channel) {
+      channel = await client.channels.fetch(targetChannelId).catch(() => null);
+    }
+    
+    if (!channel) {
+      console.error(`❌ Channel not found: ${targetChannelId}`);
+      return {
+        query,
+        results: [],
+        totalResults: 0,
+        searchTimestamp: Date.now(),
+        error: 'channel_not_found'
+      };
+    }
+
+    // Perform the search
+    const searchResults = await channel.search({
+      query: query.split('in:#')[1] || query.split('thread:')[1] || query,
+      limit: Math.min(limit, 50) // Discord API max is 50
+    });
+
+    // Transform results to our format
+    const results = searchResults.messages.map(msg => ({
+      id: msg.id,
+      channelId: msg.channelId,
+      author: {
+        id: msg.author.id,
+        username: msg.author.username,
+        discriminator: msg.author.discriminator,
+        avatar: msg.author.avatar
+      },
+      content: msg.content,
+      timestamp: msg.createdTimestamp,
+      createdTimestamp: msg.createdTimestamp,
+      attachments: msg.attachments.map(a => ({
+        id: a.id,
+        filename: a.filename,
+        url: a.url,
+        contentType: a.contentType
+      })),
+      reactions: msg.reactions.cache.map(r => ({
+        emoji: r.emoji.name || r.emoji.id,
+        count: r.count
+      }))
+    }));
+
+    return {
+      query,
+      results,
+      totalResults: results.length,
+      searchTimestamp: Date.now(),
+      raw: searchResults // Keep raw for debugging
+    };
+
+  } catch (error) {
+    console.error(`❌ Discord search error:`, error.message);
+    return {
+      query,
+      results: [],
+      totalResults: 0,
+      searchTimestamp: Date.now(),
+      error: error.message
+    };
+  }
+}}
 
 /**
  * Build a compact, context-aware summary from search results

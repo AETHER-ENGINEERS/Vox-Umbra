@@ -15,14 +15,16 @@ const { getStats } = require('./memory/store');
 
 /**
  * Build comprehensive context for personality model
+ * When searchResults are not provided, fetches them via Discord API
  */
 async function buildContext(personality, options = {}) {
   const {
+    client,
     channelId,
     threadId = null,
     query = null,
     recentMessages = [],
-    searchResults = [],
+    searchResults = null, // null = fetch from API
     memoryLimit = 10,
     includeStats = true
   } = options;
@@ -50,7 +52,21 @@ async function buildContext(personality, options = {}) {
   }
   
   // 2. Search results (Discord API)
-  if (searchResults && searchResults.length > 0) {
+  let realSearchResults = searchResults;
+  
+  if (searchResults === null && client && channelId) {
+    // Fetch from Discord API
+    const { performSearch } = require('../handlers/search');
+    const searchResultsData = await performSearch(client, {
+      channelId,
+      threadId,
+      query: query || '',
+      limit: 30
+    });
+    realSearchResults = searchResultsData.results || [];
+  }
+  
+  if (realSearchResults && realSearchResults.length > 0) {
     context.sources.search = {
       type: 'discord_search',
       count: searchResults.length,
