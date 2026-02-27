@@ -100,9 +100,12 @@ client.on('messageCreate', async message => {
     console.log(`📊 Result:`, result);
     
     // Reply to the mention (only if searchQuery is defined)
+    // comment out for now to prevent spam - will use real model reply instead
+    /*
     if (result && result.searchQuery && result.searchQuery !== message.content) {
       await message.reply(`✅ Context built! Search: ${result.searchQuery}`);
     }
+    */
   }
   
   return null;
