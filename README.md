@@ -34,13 +34,13 @@ Vox-Umbra/
 ├── src/
 │   ├── index.js              # Main entry point
 │   ├── handlers/
-│   │   ├── message.js        # Text message handling + context summarizer
-│   │   └── context.js        # Core summarization logic (invisible infrastructure)
+│   │   ├── message.js        # Text message handling + search-based context
+│   │   └── search.js         # Search API wrapper + intent extraction
 │   └── commands/
-│       ├── hello.js          # /hello test command
+│       ├── ping.js           # /ping test command
 │       └── setup.js          # /setup status report
 ├── data/
-│   └── summaries/            # Auto-generated summaries (gitignored)
+│   └── searches/             # Search results (gitignored)
 └── README.md
 ```
 
@@ -65,25 +65,28 @@ Vox-Umbra/
 
 ---
 
-## 📊 Channel Context Summarizer (Invisible Infrastructure)
+## 📊 Channel Context Summarizer (Search-Based)
 
 **Design Philosophy:**
 - Summarization is **silent and automatic** — no user-facing commands needed
-- Only the last 10 messages are kept in full; older context is summarized
-- When bot is pinged, it prepares context with summary + recent messages for Kimi K2
-- **Thread awareness:** Separate summaries per channel/thread
+- Uses Discord's **search API** for targeted context retrieval
+- Only searches when bot is pinged (on-demand)
+- **Thread-aware:** Can search specific channels or threads
 
 **How it works:**
-1. Bot tracks all messages per channel/thread
-2. When pinged, it auto-summarizes everything before last 10 messages
-3. Passes summary + last 10 messages to Kimi K2
-4. Trims old context to avoid token bloat
+1. Bot monitors messages but doesn't store full history (memory-efficient)
+2. When pinged, it extracts search intent from the mention message:
+   - `last 24 hours` → time-based search
+   - `from @user` → user-based search
+   - Topic keywords → keyword search
+3. Uses Discord search API to retrieve relevant messages
+4. Summarizes search results and passes to Kimi K2
 
 **Why it matters:**
-- Prevents context window overflow in busy channels
-- Preserves only relevant conversation flow for Kimi K2
-- "Invisible memory" — model remembers without cluttering chat
-- Thread-specific — doesn't mix up different discussion topics
+- ✅ **No context window bloat** — searches only when needed
+- ✅ **Relevant context only** — search terms = actual query intent
+- ✅ **Deep history access** — Discord search can go back years
+- ✅ **Thread-aware** — doesn't mix up different discussion topics
 
 **No user commands needed** — this is all infrastructure for Kimi K2 model integration.
 
@@ -96,7 +99,7 @@ Vox-Umbra/
 | Text responses | ✅ Completed |
 | Image uploads/reactions | ✅ Completed |
 | Image analysis (caption, OCR) | ✅ Implemented |
-| Channel summarizer | ✅ Implemented |
+| Search-based context | ✅ Implemented |
 | Voice responses (TTS) | 🟡 Later |
 | Video/URL previews | 🟡 Later |
 
