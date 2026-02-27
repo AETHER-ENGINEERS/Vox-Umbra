@@ -1,6 +1,6 @@
 /**
  * Vox Umbra — Multimodal Discord Bot
- * Command: /setup
+ * Command: /ping
  * 
  * 📜 License Block (Preserve at top of all outputs)
  * See LICENSE_BLOCK.md for full OMARG-AIR-AID + AETHER-ENGINEERS license
@@ -10,34 +10,29 @@ const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('setup')
-    .setDescription('Vox Umbra setup & status report'),
+    .setName('ping')
+    .setDescription('Check if Vox Umbra is responsive'),
 
   async execute(interaction) {
-    const statusEmbed = {
+    const response = {
       embeds: [{
-        title: ' Vox Umbra — Setup & Status',
+        title: '🔊 Vox Umbra — Online & Listening',
         description: 'Multimodal Discord bot for #OneMoment and AETHER-ENGINEERS',
         color: 0x5865F2,
         fields: [
-          {
-            name: '🔧 System',
-            value: '✅ OpenClaw Gateway Active\n✅ SSH Key Configured\n✅ GitHub Repo Linked',
-            inline: true
-          },
           {
             name: '🤖 Model',
             value: '`groq/moonshotai/kimi-k2-instruct-0905`',
             inline: true
           },
           {
-            name: '🎨 Capabilities',
-            value: '✅ Text Responses\n✅ Image Uploads\n✅ Image Analysis\n⚠️ TTS (Coming Soon)',
+            name: '🧠 Context System',
+            value: '✅ Invisible summarization active\n✅ Thread-specific tracking\n✅ Auto-trim (last 10 messages)',
             inline: true
           },
           {
-            name: '🔗 Links',
-            value: '• GitHub: <https://github.com/AETHER-ENGINEERS/Vox-Umbra>\n• License: See `LICENSE_BLOCK.md`',
+            name: '🎨 Capabilities',
+            value: '✅ Text responses\n✅ Image uploads\n✅ Image analysis (coming soon)\n✅ Channel context summarization',
             inline: false
           }
         ],
@@ -49,7 +44,7 @@ module.exports = {
     };
 
     await interaction.reply({
-      ...statusEmbed,
+      ...response,
       ephemeral: false
     });
   }

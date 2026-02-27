@@ -34,14 +34,11 @@ Vox-Umbra/
 ├── src/
 │   ├── index.js              # Main entry point
 │   ├── handlers/
-│   │   ├── message.js        # Text message handling + channel summarizer
-│   │   └── interaction.js    # Slash commands + modals
-│   ├── commands/
-│   │   ├── hello.js          # /hello test command
-│   │   ├── setup.js          # /setup status report
-│   │   └── summary.js        # /summary channel/thread summaries
-│   └── utils/
-│       └── discord.js        # Utility functions
+│   │   ├── message.js        # Text message handling + context summarizer
+│   │   └── context.js        # Core summarization logic (invisible infrastructure)
+│   └── commands/
+│       ├── hello.js          # /hello test command
+│       └── setup.js          # /setup status report
 ├── data/
 │   └── summaries/            # Auto-generated summaries (gitignored)
 └── README.md
@@ -68,23 +65,27 @@ Vox-Umbra/
 
 ---
 
-## 📊 Channel Summarizer Feature
+## 📊 Channel Context Summarizer (Invisible Infrastructure)
+
+**Design Philosophy:**
+- Summarization is **silent and automatic** — no user-facing commands needed
+- Only the last 10 messages are kept in full; older context is summarized
+- When bot is pinged, it prepares context with summary + recent messages for Kimi K2
+- **Thread awareness:** Separate summaries per channel/thread
 
 **How it works:**
-- Tracks all messages per channel/thread
-- Auto-summarizes every 25 messages or after 15 min idle
-- Saves summaries to `data/summaries/` (gitignored)
-- Provides `/summary` slash command to query recent summaries
-
-**Commands:**
-- `/summary` — Get latest summary for current channel
-- `/summary --hours=24` — Custom time range (1-24 hours)
-- `/summary --thread=true` — Summarize current thread
+1. Bot tracks all messages per channel/thread
+2. When pinged, it auto-summarizes everything before last 10 messages
+3. Passes summary + last 10 messages to Kimi K2
+4. Trims old context to avoid token bloat
 
 **Why it matters:**
-- Reduces token usage (summarized context instead of raw messages)
-- Preserves important discussion threads
-- Enables "memory" for Kimi K2 model integration
+- Prevents context window overflow in busy channels
+- Preserves only relevant conversation flow for Kimi K2
+- "Invisible memory" — model remembers without cluttering chat
+- Thread-specific — doesn't mix up different discussion topics
+
+**No user commands needed** — this is all infrastructure for Kimi K2 model integration.
 
 ---
 
