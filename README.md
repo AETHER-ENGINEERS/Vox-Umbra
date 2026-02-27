@@ -1,6 +1,7 @@
 # Vox-Umbra — Lightweight Personality Bot Framework
 
-**Project Status:** ✅ **V1.0 - Framework Core Complete**  
+**Project Status:** ✅ **V1.0 Stable - Production Ready**  
+**Branch:** `main`  
 **License:** OMARG-AIR-AID + AETHER-ENGINEERS Multiversal License  
 **Current Model:** Groq/Kimi K2 (multimodal)  
 **Target:** Multiple independent personality bots for #OneMoment & Thelema  
@@ -195,58 +196,12 @@ Framework is **model-agnostic** — easy to swap later:
 
 ---
 
-## 📋 Next Steps
+## 📋 Next Steps (Main Branch - Stable)
 
 1. **Personalities** — Add more personalities (each = config + schema)
 2. **Dashboard** — Web UI for monitoring/personality management
 3. **Voice Support** — Voice synthesis integration
 4. **Image Gallery** — Browse saved favorite images
-5. **Webhook Delegation** — Real OMARG API integration
-
----
-
-## 🧪 Local Testing Setup
-
-### Prerequisites
-- Node.js 18+
-- npm or yarn
-
-### Quick Start
-
-1. **Install dependencies:**
-```bash
-npm install
-```
-
-2. **Create `.env` file:**
-```bash
-cp .env.example .env
-# Edit .env with your OMARG_API_TOKEN and Discord bot token
-```
-
-3. **Run the mock OMARG server (in one terminal):**
-```bash
-node mock-omarg-server.js
-```
-
-4. **Run the bot (in another terminal):**
-```bash
-node src/index.js
-```
-
-### Testing Delegation
-
-Run the delegation test script:
-```bash
-node test-delegation.js
-```
-
-This will test all delegation types:
-- ✅ Web search
-- ✅ Image generation
-- ✅ Linux commands
-- ✅ Python execution
-- ✅ Weather check
 
 ---
 
