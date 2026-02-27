@@ -138,12 +138,14 @@ async function performSearch(client, searchOptions) {
 
   } catch (error) {
     console.error(`❌ Discord search error:`, error.message);
+    console.log(`🔧 Falling back to channel history read...`);
     return {
       query,
       results: [],
       totalResults: 0,
       searchTimestamp: Date.now(),
-      error: error.message
+      error: error.message,
+      fallback: true
     };
   }
 }
@@ -255,6 +257,21 @@ async function prepareContextForModel(client, channelId, threadId, messageConten
   // Perform search (in production, this calls Discord API)
   const searchResults = await performSearch(client, searchOptions);
 
+  // If search failed or is empty, fall back to channel history
+  if (!searchResults.results || searchResults.results.length === 0) {
+    console.log(`🔧 Search returned no results, reading channel history...`);
+    const historyResults = await fetchChannelHistory(client, channelId, threadId, messageContent, 50);
+    if (historyResults && historyResults.results.length > 0) {
+      return {
+        contextId,
+        searchQuery: messageContent,
+        summary: buildSearchSummary(historyResults.results, contextId),
+        searchResults: historyResults,
+        intent
+      };
+    }
+  }
+
   // Build summary from search results
   const summary = buildSearchSummary(searchResults.results || [], contextId);
 
@@ -278,7 +295,67 @@ async function prepareContextForModel(client, channelId, threadId, messageConten
  */
 module.exports = {
   performSearch,
+  fetchChannelHistory,
   buildSearchSummary,
   extractSearchIntent,
   prepareContextForModel
 };
+
+/**
+ * Fetch channel history as fallback when search fails
+ */
+async function fetchChannelHistory(client, channelId, threadId = null, query = '', limit = 50) {
+  const targetChannelId = threadId || channelId;
+  
+  console.log(`📖 Fetching channel history for: ${targetChannelId} (limit: ${limit})`);
+  
+  try {
+    let channel = client.channels.cache.get(targetChannelId);
+    if (!channel) {
+      channel = await client.channels.fetch(targetChannelId).catch(() => null);
+    }
+    
+    if (!channel) {
+      console.error(`❌ Channel not found: ${targetChannelId}`);
+      return { results: [], totalResults: 0, error: 'channel_not_found' };
+    }
+    
+    const messages = [];
+    const fetched = await channel.messages.fetch({ limit });
+    
+    fetched.forEach(msg => {
+      if (msg.content && msg.author.id !== client.user.id) {
+        messages.push({
+          id: msg.id,
+          channelId: msg.channelId,
+          author: {
+            id: msg.author.id,
+            username: msg.author.username,
+            discriminator: msg.author.discriminator,
+            avatar: msg.author.avatar
+          },
+          content: msg.content,
+          timestamp: msg.createdTimestamp,
+          createdTimestamp: msg.createdTimestamp,
+          attachments: msg.attachments.map(a => ({
+            id: a.id,
+            filename: a.filename,
+            url: a.url,
+            contentType: a.contentType
+          }))
+        });
+      }
+    });
+    
+    return {
+      results: messages,
+      totalResults: messages.length,
+      timestamp: Date.now()
+    };
+    
+  } catch (error) {
+    console.error(`❌ Error fetching channel history:`, error.message);
+    return { results: [], totalResults: 0, error: error.message };
+  }
+}
+
