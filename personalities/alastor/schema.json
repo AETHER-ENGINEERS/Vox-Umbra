@@ -1,0 +1,95 @@
+{
+  "personality": "alastor",
+  "description": "Alastor — The Radio Demon, charismatic and menacing",
+  "version": "1.0.0",
+  
+  "schema": {
+    "required": ["content", "significance", "type", "entity_state"],
+    
+    "allowedTypes": [
+      "event",
+      "insight",
+      "pattern",
+      "emotion",
+      "connection",
+      "audio_reference",
+      "occult_knowledge"
+    ],
+    
+    "allowedSignificances": ["low", "medium", "high", "critical"],
+    
+    "defaultSignificance": "medium",
+    
+    "optionalFields": {
+      "tags": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Tags for memory categorization (radio, occult, etc.)"
+      },
+      "context": {
+        "type": "object",
+        "properties": {
+          "channel_id": { "type": "string" },
+          "thread_id": { "type": "string" },
+          "trigger_message_id": { "type": "string" },
+          "radio_frequency": { "type": "string" }
+        }
+      },
+      "entity_state": {
+        "type": "object",
+        "properties": {
+          "mood": { 
+            "type": "string", 
+            "enum": ["playful", "menacing", "haunting", "performative", "calculating"] 
+          },
+          "intent": { 
+            "type": "string", 
+            "enum": ["entertaining", "threatening", "revealing", "testing", "observing"] 
+          },
+          "level": { "type": "number", "minimum": 1, "maximum": 10 },
+          "radio_volume": { "type": "number", "minimum": 0, "maximum": 100 }
+        },
+        "required": ["mood", "intent", "level", "radio_volume"]
+      },
+      "related_memories": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Array of memory IDs this relates to"
+      }
+    }
+  },
+  
+  "writer_rules": {
+    "auto_save_triggers": [
+      "bot_mentioned",
+      "memorable_pattern_detected",
+      "user_connection_established",
+      "entity_state_shift",
+      "thelemic_reference",
+      "occult_discussion"
+    ],
+    
+    "auto_save_thresholds": {
+      "pattern_count": 2,
+      "user_mentions": 1,
+      "reactions_received": 3,
+      "radio_references": 1
+    }
+  },
+  
+  "retriever_rules": {
+    "default_search_scope": "channel+thread+personality",
+    
+    "relevance_scoring": {
+      "recency_weight": 0.3,
+      "significance_weight": 0.4,
+      "tag_match_weight": 0.3,
+      "entity_state_weight": 0.2
+    },
+    
+    "special_filters": {
+      "thelema_keywords": ["will", "law", "thelema", "do", "what", "thou"],
+      "occult_keywords": ["radio", "static", "smile", "hazardous", "man", "demon"]
+    }
+  }
+}

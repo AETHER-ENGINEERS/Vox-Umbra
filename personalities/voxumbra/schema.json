@@ -1,0 +1,76 @@
+{
+  "personality": "voxumbra",
+  "description": "Default personality for Vox Umbra - multimodal Discord bot",
+  "version": "1.0.0",
+  
+  "schema": {
+    "required": ["content", "significance", "type"],
+    
+    "allowedTypes": [
+      "event",
+      "insight",
+      "pattern",
+      "emotion",
+      "connection",
+      "context"
+    ],
+    
+    "allowedSignificances": ["low", "medium", "high", "critical"],
+    
+    "defaultSignificance": "low",
+    
+    "optionalFields": {
+      "tags": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Tags for memory categorization"
+      },
+      "context": {
+        "type": "object",
+        "properties": {
+          "channel_id": { "type": "string" },
+          "thread_id": { "type": "string" },
+          "trigger_message_id": { "type": "string" }
+        }
+      },
+      "entity_state": {
+        "type": "object",
+        "properties": {
+          "mood": { "type": "string", "enum": ["playful", "menacing", "reflective", "curious", "serene"] },
+          "intent": { "type": "string", "enum": ["teaching", "warning", "playing", "observing", "connecting"] },
+          "level": { "type": "number", "minimum": 1, "maximum": 10 }
+        }
+      },
+      "related_memories": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Array of memory IDs this relates to"
+      }
+    }
+  },
+  
+  "writer_rules": {
+    "auto_save_triggers": [
+      "bot_mentioned",
+      "memorable_pattern_detected",
+      "user_connection_established",
+      "entity_state_shift"
+    ],
+    
+    "auto_save_thresholds": {
+      "pattern_count": 3,
+      "user_mentions": 2,
+      "reactions_received": 5
+    }
+  },
+  
+  "retriever_rules": {
+    "default_search_scope": "channel+thread",
+    
+    "relevance_scoring": {
+      "recency_weight": 0.4,
+      "significance_weight": 0.3,
+      "tag_match_weight": 0.3
+    }
+  }
+}

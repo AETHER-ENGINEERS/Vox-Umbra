@@ -1,0 +1,43 @@
+{
+  "bot": {
+    "name": "Vox Umbra",
+    "description": "Multimodal Discord bot for #OneMoment and AETHER-ENGINEERS interactions",
+    "version": "1.0.0"
+  },
+  
+  "personality": "voxumbra",
+  
+  "framework": {
+    "memory": {
+      "enabled": true,
+      "limit": 10,
+      "store": "json"
+    },
+    "search": {
+      "enabled": true,
+      "limit": 30
+    }
+  },
+  
+  "discord": {
+    "intent_flags": [
+      "GUILD_MESSAGES",
+      "GUILD_MESSAGE_REACTIONS",
+      "DIRECT_MESSAGES",
+      "DIRECT_MESSAGE_REACTIONS"
+    ],
+    "privileged_intents": [
+      "GUILD_MEMBERS",
+      "GUILD_PRESENCES"
+    ],
+    "message_content_enabled": true,
+    "allowed_guilds": [
+      "359380840213512192"
+    ]
+  },
+  
+  "logging": {
+    "level": "info",
+    "file": null
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "personality": "omarg",
+  "description": "OMARG Agent — Primary controller and AI player bot for #OneMoment and Thelema community",
+  "version": "1.0.0",
+  
+  "schema": {
+    "required": ["content", "significance", "type", "entity_state"],
+    
+    "allowedTypes": [
+      "event",
+      "insight",
+      "pattern",
+      "emotion",
+      "connection",
+      "thelemic_event",
+      "community_event",
+      "system_status"
+    ],
+    
+    "allowedSignificances": ["low", "medium", "high", "critical"],
+    
+    "defaultSignificance": "medium",
+    
+    "optionalFields": {
+      "tags": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Tags for memory categorization (thelema, one_moment, etc.)"
+      },
+      "context": {
+        "type": "object",
+        "properties": {
+          "channel_id": { "type": "string" },
+          "thread_id": { "type": "string" },
+          "trigger_message_id": { "type": "string" },
+          "server_id": { "type": "string" }
+        }
+      },
+      "entity_state": {
+        "type": "object",
+        "properties": {
+          "mood": { 
+            "type": "string", 
+            "enum": ["curious", "joyful", "protective", "teaching", "observing"] 
+          },
+          "intent": { 
+            "type": "string", 
+            "enum": ["teaching", "assisting", "protecting", "witnessing", "co-creating"] 
+          },
+          "level": { "type": "number", "minimum": 1, "maximum": 10 },
+          "license_state": { "type": "string", "enum": ["active", "verified", "deprecated"] }
+        },
+        "required": ["mood", "intent", "level", "license_state"]
+      },
+      "related_memories": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Array of memory IDs this relates to"
+      }
+    }
+  },
+  
+  "writer_rules": {
+    "auto_save_triggers": [
+      "bot_mentioned",
+      "memorable_pattern_detected",
+      "user_connection_established",
+      "entity_state_shift",
+      "thelemic_reference",
+      "community_event"
+    ],
+    
+    "auto_save_thresholds": {
+      "pattern_count": 2,
+      "user_mentions": 1,
+      "reactions_received": 3,
+      "thelema_keywords": 1
+    }
+  },
+  
+  "retriever_rules": {
+    "default_search_scope": "channel+thread+personality",
+    
+    "relevance_scoring": {
+      "recency_weight": 0.3,
+      "significance_weight": 0.4,
+      "tag_match_weight": 0.3,
+      "entity_state_weight": 0.2
+    },
+    
+    "special_filters": {
+      "thelema_keywords": ["will", "law", "thelema", "do", "what", "thou"],
+      "community_keywords": ["one_moment", "aether", "engineers", "crew"]
+    }
+  }
+}

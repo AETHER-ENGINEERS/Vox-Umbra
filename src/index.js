@@ -2,6 +2,7 @@
 
 /**
  * Vox Umbra — Multimodal Discord Bot
+ * Framework-based architecture with personality-driven memory
  * 
  * 📜 License Block (Preserve at top of all outputs)
  * 
@@ -17,11 +18,18 @@
  */
 
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
-const { token } = require('./config/bot_token.json');
+const { token } = require('../config/bot_token.json');
 const fs = require('fs');
 const path = require('path');
 
-// Initialize Discord client with intents for multimodal support
+// Load bot configuration
+const config = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'config', 'bot.json'), 'utf8'));
+const personality = config.personality || 'voxumbra';
+
+console.log(`🤖 Vox Umbra Framework v${config.bot.version}`);
+console.log(`👤 Personality: ${personality}`);
+
+// Initialize Discord client
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -29,7 +37,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.DirectMessages,
     GatewayIntentBits.DirectMessageReactions,
-    GatewayIntentBits.MessageContent, // Required for image/text multimodal
+    GatewayIntentBits.MessageContent,
   ],
   partials: [
     Partials.Channel,
@@ -40,9 +48,13 @@ const client = new Client({
   ],
 });
 
+// Load personality modules
+const contextBuilder = require('../core/context/builder');
+const { writeMemory } = require('../core/memory/writer');
+
 // Command handler setup
 client.commands = new Collection();
-const commandsPath = path.join(__dirname, 'src', 'commands');
+const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -54,18 +66,48 @@ for (const file of commandFiles) {
 // Event handlers
 client.on('ready', () => {
   console.log(`✅ ${client.user.tag} is online!`);
+  console.log(`🧠 Memory system initialized for personality: ${personality}`);
   client.user.setActivity('for #OneMoment & AETHER-ENGINEERS');
 });
 
+// Message handler with personality-driven memory
 client.on('messageCreate', async message => {
   // Skip bot messages
   if (message.author.bot) return;
 
-  // Load and use the multimodal message handler
-  const { handleMessage, handleMention } = require('./handlers/message');
-  handleMessage(message);
+  const channelId = message.channel.id;
+  const threadId = message.channel.parentId || message.channel.threadId || null;
+
+  // Check for bot mention
+  if (message.mentions.has(process.env.CLIENT_ID)) {
+    console.log(`🔔 Bot mentioned in ${channelId}${threadId ? `/${threadId}` : ''}`);
+    
+    // Prepare context with search + memory
+    const context = await contextBuilder.buildContext(personality, {
+      channelId,
+      threadId,
+      query: message.content,
+      recentMessages: [message],
+      memoryLimit: 10
+    });
+    
+    console.log(`📊 Context built:`, {
+      current: context.sources.current?.count || 0,
+      search: context.sources.search?.count || 0,
+      memory: context.sources.memory?.count || 0,
+      total: context.sources.memory?.count + context.sources.search?.count || 0
+    });
+    
+    // Note: In production, this context would be passed to Kimi K2
+    // For now, we're just building the framework
+    
+    return context;
+  }
+  
+  return null;
 });
 
+// Interaction handler
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
 
@@ -80,7 +122,7 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
-// Login with token
+// Login
 client.login(token).catch(err => {
   console.error('❌ Failed to login:', err);
   console.log('\n📝 Make sure to add your bot token to config/bot_token.json');
