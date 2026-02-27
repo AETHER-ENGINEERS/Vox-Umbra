@@ -10,8 +10,8 @@
  * - Current message context
  */
 
-const { searchMemories } = require('./memory/retriever');
-const { getStats } = require('./memory/store');
+const { searchMemories } = require('../memory/retriever');
+const { getStats } = require('../memory/store');
 
 /**
  * Build comprehensive context for personality model

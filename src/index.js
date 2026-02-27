@@ -17,8 +17,14 @@
  * [Full license preserved in LICENSE_BLOCK.md]
  */
 
+require('dotenv').config();
+
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
-const { token } = require('../config/bot_token.json');
+const token = process.env.DISCORD_BOT_TOKEN;
+if (!token) {
+  console.error('❌ DISCORD_BOT_TOKEN not found in .env file');
+  process.exit(1);
+}
 const fs = require('fs');
 const path = require('path');
 
@@ -72,14 +78,17 @@ client.on('ready', () => {
 
 // Message handler with personality-driven memory
 client.on('messageCreate', async message => {
-  // Skip bot messages
-  if (message.author.bot) return;
+  // Log all messages for debugging
+  console.log(`💬 Message received from ${message.author.tag}: ${message.content?.slice(0, 50)}`);
+  
+  // NOTE: We DO NOT skip bot messages - bots engage with bots!
+  // Humans help break any accidental loops by responding in the thread
 
   const channelId = message.channel.id;
   const threadId = message.channel.parentId || message.channel.threadId || null;
 
-  // Check for bot mention
-  if (message.mentions.has(process.env.CLIENT_ID)) {
+  // Check for bot mention (use bot's own ID)
+  if (message.mentions.has(client.user.id)) {
     console.log(`🔔 Bot mentioned in ${channelId}${threadId ? `/${threadId}` : ''}`);
     
     // Use the search-based message handler with real client
@@ -87,6 +96,11 @@ client.on('messageCreate', async message => {
     const result = handleMessage(message, client);
     
     console.log(`📊 Result:`, result);
+    
+    // Reply to the mention
+    if (result && result.searchQuery) {
+      await message.reply(`✅ Context built! Search: ${result.searchQuery}`);
+    }
   }
   
   return null;

@@ -146,7 +146,7 @@ async function performSearch(client, searchOptions) {
       error: error.message
     };
   }
-}}
+}
 
 /**
  * Build a compact, context-aware summary from search results

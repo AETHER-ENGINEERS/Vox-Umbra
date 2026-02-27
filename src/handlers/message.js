@@ -12,8 +12,8 @@ const { prepareContextForModel } = require('./search');
  * Process incoming message
  */
 function handleMessageWrapper(message, client) {
-  // Skip bot messages to avoid loops
-  if (message.author.bot) return;
+  // NOTE: We DO NOT skip bot messages - bots engage with bots!
+  // Humans help break any accidental loops by responding in the thread
 
   const channelId = message.channel.id;
   const threadId = message.channel.parentId || message.channel.threadId || null;
@@ -23,8 +23,8 @@ function handleMessageWrapper(message, client) {
   // Log message for debugging
   console.log(`💬 [${guildId}/${channelId}${threadId ? `/${threadId}` : ''}] ${message.author.username}: ${message.content?.slice(0, 80) || '(no text)'}`);
 
-  // Check for bot mention — this is when we need to prepare context for Kimi K2
-  if (message.mentions.has(process.env.CLIENT_ID)) {
+  // Check for bot mention (use bot's own ID) — this is when we need to prepare context for Kimi K2
+  if (message.mentions.has(client.user.id)) {
     console.log(`🔔 Bot mentioned in ${contextId} — preparing search-based context for Kimi K2`);
 
     // Prepare context using search-based retrieval (real client)
